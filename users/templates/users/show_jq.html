@@ -1,0 +1,147 @@
+{% extends 'blog/base.html' %}
+{% block title %}
+    <title>了解我</title>
+
+{% endblock %}
+
+{% block main %}
+
+		<style>
+
+			* {margin: 0; padding: 0; border: none;}
+			ul {list-style: none;}
+			#box {
+				width: 600px;
+				height: 300px;
+				border: 2px solid #0e84b5;
+				margin: 0px auto;
+				position: relative;
+				overflow: hidden;
+			}
+
+			#list {
+				position: absolute;
+				left: 0px;
+				top: -14px;
+			}
+			#list li {
+				float: left;
+				width: 600px;
+				height: 300px;
+				font-size: 100px;
+				text-align: center;
+				line-height: 300px;
+			}
+			#list li img {
+				width: 100%;
+				height: 100%;
+			}
+
+
+			#list2 li{
+				float: left;
+				width: 18px;
+				height: 18px;
+				border: 1px solid black;
+				background: yellow;
+				margin-left: 5px;
+				text-align: center;
+				line-height: 18px;
+				cursor: pointer;
+			}
+
+			#list2 li.select {
+				color: yellow;
+				background: black;
+			}
+
+		</style>
+
+		<script>
+			$(function(){
+
+				//使用JQ语法实现轮播图效果
+
+				//初始化
+				$("#list li").eq(0).clone(true).appendTo("#list");
+
+				//li的数量
+				var size = $("#list li").length;
+
+				//li的宽度
+				var liW = $("#list li").eq(0).width();
+
+				//设置list的宽度
+				$("#list").css({width: size*liW});
+
+
+				//自动轮播
+				var n = 0; //即将显示的li的下标
+
+				var timer = setInterval(function(){
+					n++;
+					move();
+				}, 3000);
+
+				//将list动画移动到第n个li
+				function move(){
+
+					//左边界
+					if (n < 0) {
+						$("#list").css("left", -(size-1)*liW); //瞬间移动到最后一张
+						n = size-2; //设置即将移动到倒数第2张
+					}
+
+					//右边界
+					if (n >= size) {
+						$("#list").css("left", 0); //瞬间移动到第一张
+						n = 1; //设置即将移动到的下标为1（第二张图）
+					}
+
+					//动画移动
+					$("#list").stop(true).animate({left:-n*liW});
+
+					//修改小按钮的状态
+					$("#list2 li").eq(n%4).addClass("select").siblings().removeClass("select");
+
+				}
+
+				//移入小按钮
+				$("#list2 li").mouseenter(function(){
+					n = $(this).index();
+					move();
+				})
+
+				//移入box停止定时器
+				$("#box").mouseenter(function(){
+					clearInterval(timer);
+				})
+				//移出box开启定时器
+				$("#box").mouseleave(function(){
+					clearInterval(timer);
+					timer = setInterval(function(){
+						n++;
+						move();
+					}, 3000)
+				})
+
+			})
+		</script>
+
+	<body>
+		<div id="box">
+			<ul id="list">
+				<li><img src="/uploads/b1.jpg" /></li>
+				<li><img src="/uploads/b2.jpg" /></li>
+				<li><img src="/uploads/b3.jpg" /></li>
+				<li><img src="/uploads/b4.jpg" /></li>
+                <li><img src="/uploads/b5.jpg" /></li>
+				<li><img src="/uploads/b6.jpg" /></li>
+				<li><img src="/uploads/b7.jpg" /></li>
+				<li><img src="/uploads/b8.jpg" /></li>
+            </ul>
+		</div>
+        <audio autoplay="autoplay" loop="loop"><source src="/uploads/music.mp3"></audio>
+	</body>
+
+{% endblock %}

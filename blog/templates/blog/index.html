@@ -1,0 +1,65 @@
+{% extends 'blog/base.html' %}
+{% block title %}
+    <title>博客首页</title>
+{% endblock %}
+
+{% block main %}
+    {% if error_msg %}
+        <p>{{ error_msg }}</p>
+    {% endif %}
+
+    {% for post in post_list %}
+
+        <article class="post post-{{ post.id }}">
+            <header class="entry-header">
+                <h1 class="entry-title">
+                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                </h1>
+                <div class="entry-meta">
+
+                    <span class="post-date"><a href="#"><time class="entry-date">发布于:{{ post.modified_time }}</time></a></span>
+                    <span class="post-author"><a href="#">作者:{{ post.author }}</a></span>
+                    <span class="comments-link"><a href="{{ post.get_absolute_url }}#comment-area">评论{{ post.comment_set.count }}</a></span>
+                    <span class="views-count"><a href="{{ post.get_absolute_url }}">浏览数{{ post.views }}</a></span>
+                </div>
+            </header>
+            <div class="entry-content clearfix">
+                {% if not post.excerpt %}
+                    <p>{{ post.content|truncatechars:30 }}...</p>
+                {% else %}
+                    <p>{{ post.excerpt }}...</p>
+                {% endif %}
+
+                <p><img src="/uploads/{{ post.picture }}" height="300" width="500"></p>
+                <div class="read-more cl-effect-14">
+                    <a href="{{ post.get_absolute_url }}" class="more-link">继续阅读 <span class="meta-nav">→</span></a>
+                </div>
+            </div>
+        </article>
+    {% empty %}
+        暂无文章
+    {% endfor %}
+
+    {% if is_paginated %}
+        <form  action="">
+        <div class="pagination-simple">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">上一页</a>
+            {% endif %}
+            {% for i in page_range %}
+                {% if page_obj.number == i %}
+                    <a style="color:red;font-size:26px;padding: 5px" href="?page={{ i }}">{{ i }}</a>
+                {% else %}
+                    <a style="padding: 5px" href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">下一页</a>
+            {% endif %}
+        </div>
+        <input type="text" name="page">
+        <input type="submit" value="转到">
+        </form>
+    {% endif %}
+
+{% endblock %}
